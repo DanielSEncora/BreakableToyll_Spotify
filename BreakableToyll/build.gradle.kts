@@ -4,7 +4,7 @@ plugins {
 	id("io.spring.dependency-management") version "1.1.6"
 }
 
-group = "encora.spark"
+group = "com.encora"
 version = "0.0.1-SNAPSHOT"
 
 java {

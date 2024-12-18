@@ -1,13 +1,17 @@
-package encora.spark.BreakableToyll;
+package com.encora.BreakableToyll;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
+@RestController
 public class SpotifyApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpotifyApplication.class, args);
 	}
+
+
 
 }

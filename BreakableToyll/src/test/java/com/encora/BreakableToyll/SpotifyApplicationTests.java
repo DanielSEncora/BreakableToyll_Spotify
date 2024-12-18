@@ -1,4 +1,4 @@
-package encora.spark.BreakableToyll;
+package com.encora.BreakableToyll;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

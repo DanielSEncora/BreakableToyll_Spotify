@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("mainPage")
+@RequestMapping("Sparktify")
 public class SpotifyController {
 
     private final SpotifyService spotifyService;

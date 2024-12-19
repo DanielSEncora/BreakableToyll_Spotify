@@ -18,7 +18,7 @@ public class SpotifyService {
 
     private static String client_id = "8f488a66542545c6ae38ec67f8245952";
     private static String client_secret = "a9bafcd9d7574409be3f65b8e7430af7";
-    private static Object accessToken = null;
+    private static String accessToken = "";
 
     public SpotifyService(){}
 
@@ -30,8 +30,8 @@ public class SpotifyService {
         return "Welcome to the Test App";
     }
 
-    public Object getAccessToken() throws IOException, InterruptedException {
-        if (accessToken == null) {
+    public String getAccessToken() throws IOException, InterruptedException {
+        if (accessToken.equals("")) {
             requestAccessToken();
         }
         return accessToken;

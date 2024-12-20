@@ -20,13 +20,19 @@ public class SpotifyService {
     private static String client_secret = "a9bafcd9d7574409be3f65b8e7430af7";
     private static String accessToken = "";
 
-    public SpotifyService(){}
+    public SpotifyService() throws IOException, InterruptedException {
+        getAccessToken();
+    }
 
     public String getWelcome(){
         return "Welcome to the Spotify App";
     }
 
     public String getTest(){
+        return "Welcome to the Test App";
+    }
+
+    public Object getArtist(String url){
         return "Welcome to the Test App";
     }
 

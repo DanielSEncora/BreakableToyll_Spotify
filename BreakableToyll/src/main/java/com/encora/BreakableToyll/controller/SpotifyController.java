@@ -29,7 +29,12 @@ public class SpotifyController {
         return ResponseEntity.ok(spotifyService.getTest());
     }
 
-    @GetMapping("accessToken")
+    /*@GetMapping("accessToken")
+    public ResponseEntity<Object> getAccessToken() throws IOException, InterruptedException {
+        return ResponseEntity.ok().body(spotifyService.getAccessToken());
+    }*/
+
+    @PostMapping("auth/spotify")
     public ResponseEntity<Object> getAccessToken() throws IOException, InterruptedException {
         return ResponseEntity.ok().body(spotifyService.getAccessToken());
     }

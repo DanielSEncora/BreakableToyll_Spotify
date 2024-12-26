@@ -15,6 +15,7 @@ import java.net.URISyntaxException;
 
 @RestController
 @RequestMapping("Sparktify")
+@CrossOrigin(origins ="http://localhost:8080")
 public class SpotifyController {
 
     private final SpotifyService spotifyService;
@@ -32,6 +33,7 @@ public class SpotifyController {
     @GetMapping("login")
     @ResponseBody
     public ResponseEntity<String> spotifyLogin(){
+        System.out.println("Hi");
         return ResponseEntity.ok(spotifyService.login());
     }
 

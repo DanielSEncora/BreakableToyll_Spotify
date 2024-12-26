@@ -30,7 +30,7 @@ public class SpotifyService {
     private static String client_secret = "a9bafcd9d7574409be3f65b8e7430af7";
     private static String accessToken = "";
     private static String code = "";
-    private static final URI redirectUri = SpotifyHttpManager.makeUri("http://localhost:8080/Sparktify/get-user-code");
+    private static final URI redirectUri = SpotifyHttpManager.makeUri("http://localhost:9090/Sparktify/get-user-code");
 
     private static final SpotifyApi spotifyApi = new SpotifyApi.Builder()
             .setClientId(client_id)
@@ -48,7 +48,7 @@ public class SpotifyService {
 
     public String login(){
         AuthorizationCodeUriRequest authorizationCodeUriRequest = spotifyApi.authorizationCodeUri()
-                .scope("user-top-read")
+                .scope("user-read-private, user-read-email, user-top-read")
                 .show_dialog(true)
                 .build();
         final URI uri = authorizationCodeUriRequest.execute();
@@ -78,6 +78,7 @@ public class SpotifyService {
         }
 
         response.sendRedirect("http://localhost:9090/Sparktify/me/top/artists");
+        System.out.println("New User code = " + spotifyApi.getAccessToken());
         return spotifyApi.getAccessToken();
     }
 

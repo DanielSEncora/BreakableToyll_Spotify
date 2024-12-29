@@ -2,15 +2,20 @@ package com.encora.BreakableToyll.controller;
 
 import com.encora.BreakableToyll.model.AccessToken;
 import com.encora.BreakableToyll.service.SpotifyService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import se.michaelthelin.spotify.SpotifyApi;
+import se.michaelthelin.spotify.SpotifyHttpManager;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 
 @RestController
 @RequestMapping("Sparktify")
+@CrossOrigin(origins ="http://localhost:8080")
 public class SpotifyController {
 
     private final SpotifyService spotifyService;
@@ -25,9 +30,16 @@ public class SpotifyController {
         return ResponseEntity.ok(spotifyService.getWelcome());
     }
 
+    @GetMapping("login")
+    @ResponseBody
+    public ResponseEntity<String> spotifyLogin(){
+        System.out.println("Hi");
+        return ResponseEntity.ok(spotifyService.login());
+    }
+
     @GetMapping("get-user-code")
-    public ResponseEntity<String> getUserCode() throws IOException, InterruptedException {
-        return ResponseEntity.ok(spotifyService.getUserAccessToken());
+    public ResponseEntity<String> getSpotifyUserCode(@RequestParam("code") String userCode, HttpServletResponse response) throws IOException, InterruptedException {
+        return ResponseEntity.ok(spotifyService.getUserAccessToken(userCode,response));
     }
 
     @GetMapping("me/top/artists")

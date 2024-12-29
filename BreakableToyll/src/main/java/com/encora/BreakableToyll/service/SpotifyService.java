@@ -77,7 +77,7 @@ public class SpotifyService {
             System.out.println("Error: " + e.getMessage());
         }
 
-        response.sendRedirect("http://localhost:9090/Sparktify/me/top/artists");
+        response.sendRedirect("http://localhost:8080/homepage");
         System.out.println("New User code = " + spotifyApi.getAccessToken());
         return spotifyApi.getAccessToken();
     }

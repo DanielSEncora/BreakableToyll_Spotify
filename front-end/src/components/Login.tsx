@@ -1,6 +1,5 @@
 const Login: React.FC = () => {
   const getSpotifyUserLogin = () => {
-    console.log("Hi");
     fetch("http://localhost:9090/Sparktify/login")
       .then((response) => response.text())
       .then((response) => {

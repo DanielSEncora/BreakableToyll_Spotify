@@ -1,10 +1,7 @@
 package com.encora.BreakableToyll.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseBody;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.SpotifyHttpManager;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
@@ -21,14 +18,12 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Base64;
 
 @Service
 public class SpotifyService {
 
     private static String client_id = "8f488a66542545c6ae38ec67f8245952";
     private static String client_secret = "a9bafcd9d7574409be3f65b8e7430af7";
-    private static String accessToken = "";
     private static String code = "";
     private static final URI redirectUri = SpotifyHttpManager.makeUri("http://localhost:9090/Sparktify/get-user-code");
 
@@ -39,11 +34,7 @@ public class SpotifyService {
             .build();
 
     public SpotifyService() throws IOException, InterruptedException {
-        getAccessToken();
-    }
 
-    public String getWelcome(){
-        return "Welcome to the Spotify App";
     }
 
     public String login(){
@@ -55,13 +46,6 @@ public class SpotifyService {
          return uri.toString();
     }
 
-    public String getAccessToken() throws IOException, InterruptedException {
-        if (accessToken.equals("")) {
-            requestAccessToken();
-        }
-        return accessToken;
-    }
-
     public String getUserAccessToken(String userCode, HttpServletResponse response) throws IOException, InterruptedException {
         code = userCode;
         AuthorizationCodeRequest authorizationCodeRequest = spotifyApi.authorizationCode(code)
@@ -70,48 +54,22 @@ public class SpotifyService {
         try{
             final AuthorizationCodeCredentials authorizationCodeCredentials = authorizationCodeRequest.execute();
 
-            //Set access and refresh token for further "spotifyApi" object usage
             spotifyApi.setAccessToken(authorizationCodeCredentials.getAccessToken());
-            spotifyApi.setAccessToken(authorizationCodeCredentials.getRefreshToken());
+            spotifyApi.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
+
         } catch(IOException | SpotifyWebApiException | org.apache.hc.core5.http.ParseException e){
             System.out.println("Error: " + e.getMessage());
         }
 
         response.sendRedirect("http://localhost:8080/homepage");
-        System.out.println("New User code = " + spotifyApi.getAccessToken());
         return spotifyApi.getAccessToken();
-    }
-
-    public void requestAccessToken() throws IOException, InterruptedException {
-        String clientCredentials = client_id + ":" + client_secret;
-        String encodedCredentials = Base64.getEncoder().encodeToString(clientCredentials.getBytes());
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://accounts.spotify.com/api/token"))
-                .header("Authorization", "Basic " + encodedCredentials)
-                .header("Content-Type", "application/x-www-form-urlencoded")
-                .POST(HttpRequest.BodyPublishers.ofString("grant_type=client_credentials"))
-                .build();
-
-        HttpClient client = HttpClient.newHttpClient();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() == 200) {
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode responseJson = objectMapper.readTree(response.body());
-            accessToken = responseJson.get("access_token").asText();
-            System.out.println("Access Token = " + accessToken);
-            //accessToken = new AccessToken(responseJson.get("access_token").asText());
-        } else {
-            throw new IOException("Failed to get access token: " + response.body());
-        }
     }
 
     public String getArtist(String artistURL) throws IOException, InterruptedException, URISyntaxException {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI("https://api.spotify.com/v1/artists/" + artistURL))
-                .header("Authorization", "Bearer " + getAccessToken())
+                .header("Authorization", "Bearer " + spotifyApi.getAccessToken())
                 .GET() //GET is the default so no need to specify, just did it here for learning purposes.
                 .build();
 
@@ -125,10 +83,10 @@ public class SpotifyService {
         }
     }
 
-    public Object getMe() throws URISyntaxException, IOException, InterruptedException {
+    public String getArtistTopTracks(String artistURL) throws IOException, InterruptedException, URISyntaxException  {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI("https://api.spotify.com/v1/me"))
-                .header("Authorization", "Bearer " + getAccessToken())
+                .uri(new URI("https://api.spotify.com/v1/artists/" + artistURL + "/top-tracks"))
+                .header("Authorization", "Bearer " + spotifyApi.getAccessToken())
                 .GET() //GET is the default so no need to specify, just did it here for learning purposes.
                 .build();
 
@@ -138,7 +96,7 @@ public class SpotifyService {
         if (response.statusCode() == 200) {
             return response.body();
         } else {
-            throw new IOException("Failed to get me: " + response.body());
+            throw new IOException("Failed to get artist's top tracks: " + response.body());
         }
     }
 
@@ -153,17 +111,22 @@ public class SpotifyService {
             final Paging<Artist> artistPaging = getUsersTopArtistsRequest.execute();
 
             // return top artists as JSON
+            System.out.println(artistPaging.getItems());
             return artistPaging.getItems();
         } catch (Exception e){
             System.out.println("Something went wrong! " + e.getMessage());
+            System.out.println("Token locally saved in the Service Class: " + code);
+            System.out.println("spotifyApi Token: " + spotifyApi.getAccessToken());
+            System.out.println();
         }
+        System.out.println(new Artist[0]);
         return new Artist[0];
     }
 
     public Object getAlbum(String albumURL) throws IOException, InterruptedException, URISyntaxException  {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI("https://api.spotify.com/v1/albums/" + albumURL))
-                .header("Authorization", "Bearer " + getAccessToken())
+                .header("Authorization", "Bearer " + spotifyApi.getAccessToken())
                 .GET() //GET is the default so no need to specify, just did it here for learning purposes.
                 .build();
 
@@ -181,4 +144,5 @@ public class SpotifyService {
 
         return null;
     }
+
 }

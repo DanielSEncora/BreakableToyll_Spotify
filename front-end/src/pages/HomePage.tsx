@@ -1,11 +1,16 @@
-import React from "react";
+import SearchBar from "../components/SearchBar";
+import TopArtists from "../components/TopArtists";
 
 const HomePage = () => {
-  console.log("Rendering Message");
+  const handleSearch = (query: string) => {
+    console.log("Search query:", query);
+    // Perform search logic here (e.g., filter data, call API, etc.)
+  };
   return (
     <div>
-      <h1>Home</h1>
-      <p>Welcome to the home page!</p>
+      <h1>Welcome to the home page!</h1>
+      <SearchBar onSearch={handleSearch} />
+      <TopArtists />
     </div>
   );
 };

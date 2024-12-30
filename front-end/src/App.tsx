@@ -1,4 +1,3 @@
-import React from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -20,7 +19,7 @@ const App = () => {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/homepage" element={<HomePage />} />
-          <Route path="/artist" element={<ArtistPage />} />
+          <Route path="/artist/:id" element={<ArtistPage />} />
           <Route path="/album" element={<AlbumPage />} />
           {/* Redirect default route to /homepage */}
           <Route path="/" element={<Navigate to="/login" />} />

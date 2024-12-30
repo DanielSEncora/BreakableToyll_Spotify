@@ -20,7 +20,7 @@ const App = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/homepage" element={<HomePage />} />
           <Route path="/artist/:id" element={<ArtistPage />} />
-          <Route path="/album" element={<AlbumPage />} />
+          <Route path="/albums/:id" element={<AlbumPage />} />
           {/* Redirect default route to /homepage */}
           <Route path="/" element={<Navigate to="/login" />} />
         </Routes>
@@ -40,8 +40,7 @@ const ConditionalNavbar = () => {
 
   return (
     <nav>
-      <Link to="/homepage">HomePage</Link> |{" "}
-      <Link to="/artist">ArtistPage</Link> | <Link to="/album">AlbumPage</Link>
+      <Link to="/homepage">Home</Link>
     </nav>
   );
 };

@@ -157,6 +157,26 @@ public class SpotifyService {
         }
     }
 
+    public Object getRelatedArtists(String artistURL) throws IOException, InterruptedException, URISyntaxException  {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("https://api.spotify.com/v1/artists/" + artistURL + "/related-artists"))
+                .header("Authorization", "Bearer " + spotifyApi.getAccessToken())
+                .GET() //GET is the default so no need to specify, just did it here for learning purposes.
+                .build();
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return response.body();
+        } else {
+            System.err.println("Failed to get related artists:");
+            System.err.println("Status Code: " + response.statusCode());
+            System.err.println("Response Body: " + response.body());
+            throw new IOException("Failed to get related artists: " + response.body());
+        }
+    }
+
     public Object search() {
 
         return null;

@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 interface Artist {
   name: string;
   id: string;
   genres: string[];
+  image: Image[];
 }
 
 interface Track {
@@ -29,7 +31,7 @@ const ArtistPage: React.FC = () => {
   const [artist, setArtist] = useState<Artist | null>(null);
   const [tracks, setTracks] = useState<Track[]>([]);
   const [artistAlbums, setArtistAlbums] = useState<Album[]>([]);
-  const [relatedArtists, setRelatedArtists] = useState<Artist[]>([]);
+  //const [relatedArtists, setRelatedArtists] = useState<Artist[]>([]);
 
   useEffect(() => {
     const getArtist = async () => {
@@ -50,6 +52,34 @@ const ArtistPage: React.FC = () => {
         console.error("Error fetching artist data:", error);
       }
     };
+    /*const getRelatedArtists = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:9090/Sparktify/artists/${id}/related-artists`,
+          {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const data = await response.json();
+        if (Array.isArray(data.items)) {
+          setRelatedArtists(data.items); // Set related artists directly to the items array
+        } else {
+          console.error(
+            "Related Artists data does not contain 'items' array:",
+            data
+          );
+          setRelatedArtists([]); // Fallback to an empty array
+        }
+      } catch (error) {
+        console.error("Error fetching related artists data:", error);
+        setRelatedArtists([]); // Fallback to an empty array in case of an error
+      }
+    };*/
+
     const getArtistAlbums = async () => {
       try {
         const response = await fetch(
@@ -105,6 +135,9 @@ const ArtistPage: React.FC = () => {
       getArtist();
       getTracks();
       getArtistAlbums();
+      {
+        /*getRelatedArtists();*/
+      }
     }
   }, [id]);
 
@@ -228,14 +261,58 @@ const ArtistPage: React.FC = () => {
                       No Image
                     </span>
                   )}
-                  <span>{album.name}</span>
+                  <span>
+                    <Link to={`/albums/${album.id}`}>{album.name}</Link>
+                  </span>
                 </li>
               ))
             ) : (
               <p>No albums available.</p>
             )}
           </ul>
-          <h1>Related Artists</h1>
+          {/*<h1>Related Artists</h1>
+          <ul>
+            {relatedArtists.length > 0 ? (
+              relatedArtists.slice(0, 4).map((relatedArtist) => (
+                <li
+                  key={relatedArtist.id}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginBottom: "10px",
+                  }}
+                >
+                  {relatedArtist.image && relatedArtist.image[0] ? (
+                    <img
+                      src={relatedArtist.image[0].url}
+                      alt={relatedArtist.name}
+                      style={{
+                        width: "50px",
+                        height: "50px",
+                        marginRight: "10px",
+                        borderRadius: "5px",
+                      }}
+                    />
+                  ) : (
+                    <span
+                      style={{
+                        width: "50px",
+                        height: "50px",
+                        backgroundColor: "#ccc",
+                        display: "inline-block",
+                        marginRight: "10px",
+                      }}
+                    >
+                      No Image
+                    </span>
+                  )}
+                  <span>{relatedArtist.name}</span>
+                </li>
+              ))
+            ) : (
+              <p>No related artists available.</p>
+            )}
+          </ul>*/}
         </>
       ) : (
         <h1>Loading artist data...</h1>

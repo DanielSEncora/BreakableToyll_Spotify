@@ -22,12 +22,13 @@ const TopArtists: React.FC = () => {
 
   return (
     <div>
+      <h1>My Top Artists</h1>
       {userTopArtists ? (
         userTopArtists.map((artistResult) => (
-          <h1 key={artistResult.id}>
+          <h2 key={artistResult.id}>
             {/* Make the artist name clickable */}
             <Link to={`/artist/${artistResult.id}`}>{artistResult.name}</Link>
-          </h1>
+          </h2>
         ))
       ) : (
         <h1>LOADING...</h1>

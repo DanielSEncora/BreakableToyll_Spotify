@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const TopArtists: React.FC = () => {
   const [userTopArtists, setUserTopArtists] = useState<Artist[] | undefined>(
@@ -7,6 +8,7 @@ const TopArtists: React.FC = () => {
 
   interface Artist {
     name: string;
+    id: string;
   }
 
   useEffect(() => {
@@ -21,13 +23,17 @@ const TopArtists: React.FC = () => {
   return (
     <div>
       {userTopArtists ? (
-        userTopArtists.map((artistResult) => {
-          return <h1 key={artistResult.name}>{artistResult.name}</h1>;
-        })
+        userTopArtists.map((artistResult) => (
+          <h1 key={artistResult.id}>
+            {/* Make the artist name clickable */}
+            <Link to={`/artist/${artistResult.id}`}>{artistResult.name}</Link>
+          </h1>
+        ))
       ) : (
         <h1>LOADING...</h1>
       )}
     </div>
   );
 };
+
 export default TopArtists;

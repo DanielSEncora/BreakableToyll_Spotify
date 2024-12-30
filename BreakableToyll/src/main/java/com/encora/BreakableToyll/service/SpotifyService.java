@@ -140,9 +140,25 @@ public class SpotifyService {
         }
     }
 
+    public Object getArtistAlbums(String artistURL) throws IOException, InterruptedException, URISyntaxException  {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("https://api.spotify.com/v1/artists/" + artistURL + "/albums"))
+                .header("Authorization", "Bearer " + spotifyApi.getAccessToken())
+                .GET() //GET is the default so no need to specify, just did it here for learning purposes.
+                .build();
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return response.body();
+        } else {
+            throw new IOException("Failed to get album: " + response.body());
+        }
+    }
+
     public Object search() {
 
         return null;
     }
-
 }

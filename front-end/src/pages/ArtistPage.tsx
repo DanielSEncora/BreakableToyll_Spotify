@@ -15,6 +15,8 @@ interface Track {
 }
 
 interface Album {
+  id: string;
+  name: string;
   images: Image[];
 }
 
@@ -26,6 +28,8 @@ const ArtistPage: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // Extract the artist ID from the URL
   const [artist, setArtist] = useState<Artist | null>(null);
   const [tracks, setTracks] = useState<Track[]>([]);
+  const [artistAlbums, setArtistAlbums] = useState<Album[]>([]);
+  const [relatedArtists, setRelatedArtists] = useState<Artist[]>([]);
 
   useEffect(() => {
     const getArtist = async () => {
@@ -44,6 +48,30 @@ const ArtistPage: React.FC = () => {
         setArtist(data);
       } catch (error) {
         console.error("Error fetching artist data:", error);
+      }
+    };
+    const getArtistAlbums = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:9090/Sparktify/artists/${id}/albums`,
+          {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const data = await response.json();
+        if (Array.isArray(data.items)) {
+          setArtistAlbums(data.items); // Set albums directly to the items array
+        } else {
+          console.error("Albums data does not contain 'items' array:", data);
+          setArtistAlbums([]); // Fallback to an empty array
+        }
+      } catch (error) {
+        console.error("Error fetching albums data:", error);
+        setArtistAlbums([]); // Fallback to an empty array in case of an error
       }
     };
     const getTracks = async () => {
@@ -76,6 +104,7 @@ const ArtistPage: React.FC = () => {
     if (id) {
       getArtist();
       getTracks();
+      getArtistAlbums();
     }
   }, [id]);
 
@@ -164,6 +193,48 @@ const ArtistPage: React.FC = () => {
             </tbody>
           </table>
           <h1>Discography</h1>
+          <ul>
+            {artistAlbums.length > 0 ? (
+              artistAlbums.slice(0, 4).map((album) => (
+                <li
+                  key={album.id}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginBottom: "10px",
+                  }}
+                >
+                  {album.images && album.images[0] ? (
+                    <img
+                      src={album.images[0].url}
+                      alt={album.name}
+                      style={{
+                        width: "50px",
+                        height: "50px",
+                        marginRight: "10px",
+                        borderRadius: "5px",
+                      }}
+                    />
+                  ) : (
+                    <span
+                      style={{
+                        width: "50px",
+                        height: "50px",
+                        backgroundColor: "#ccc",
+                        display: "inline-block",
+                        marginRight: "10px",
+                      }}
+                    >
+                      No Image
+                    </span>
+                  )}
+                  <span>{album.name}</span>
+                </li>
+              ))
+            ) : (
+              <p>No albums available.</p>
+            )}
+          </ul>
           <h1>Related Artists</h1>
         </>
       ) : (

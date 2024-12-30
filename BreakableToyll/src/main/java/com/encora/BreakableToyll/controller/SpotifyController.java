@@ -47,10 +47,17 @@ public class SpotifyController {
         return ResponseEntity.ok(spotifyService.getArtistTopTracks(id));
     }
 
+    @GetMapping("artists/{id}/albums")
+    public ResponseEntity<Object> getArtistAlbums(@PathVariable String id) throws IOException, URISyntaxException, InterruptedException {
+        return ResponseEntity.ok(spotifyService.getArtistAlbums(id));
+    }
+
     @GetMapping("albums/{id}")
     public ResponseEntity<Object> getAlbum(@PathVariable String id) throws IOException, URISyntaxException, InterruptedException {
         return ResponseEntity.ok(spotifyService.getAlbum(id));
     }
+
+
 
     @GetMapping("search")
     public ResponseEntity<Object> searchArtist(){

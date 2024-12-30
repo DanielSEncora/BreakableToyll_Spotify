@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 interface Artist {
   name: string;
   id: string;
-  genres: string;
+  genres: string[];
 }
 
 interface Track {
@@ -94,11 +94,37 @@ const ArtistPage: React.FC = () => {
     <div>
       {artist ? (
         <>
-          <h1>{artist.name}</h1>
-          <p>Genres: {artist.genres}</p>
+          <h1
+            style={{
+              width: "100%",
+              textAlign: "center",
+              marginTop: "5px",
+            }}
+          >
+            {artist.name}
+          </h1>
+          <p>
+            Genres:{" "}
+            {artist.genres.length > 0 ? (
+              artist.genres.map((genre, index) => (
+                <span key={index}>
+                  {genre}
+                  {index < artist.genres.length - 1 ? ", " : ""}
+                </span>
+              ))
+            ) : (
+              <span>No genres available</span>
+            )}
+          </p>
           <h1>Popular songs</h1>
           <table
-            style={{ width: "100%", textAlign: "center", marginTop: "5px" }}
+            style={{
+              width: "100%",
+              textAlign: "center",
+              marginTop: "5px",
+              border: "solid",
+              borderBottomColor: "white",
+            }}
           >
             <thead>
               <tr>

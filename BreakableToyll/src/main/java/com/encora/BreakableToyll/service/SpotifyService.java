@@ -110,8 +110,6 @@ public class SpotifyService {
         try{
             final Paging<Artist> artistPaging = getUsersTopArtistsRequest.execute();
 
-            // return top artists as JSON
-            System.out.println(artistPaging.getItems());
             return artistPaging.getItems();
         } catch (Exception e){
             System.out.println("Something went wrong! " + e.getMessage());
@@ -119,7 +117,6 @@ public class SpotifyService {
             System.out.println("spotifyApi Token: " + spotifyApi.getAccessToken());
             System.out.println();
         }
-        System.out.println(new Artist[0]);
         return new Artist[0];
     }
 
@@ -177,8 +174,26 @@ public class SpotifyService {
         }
     }
 
-    public Object search() {
+    public Object search(String query)  throws IOException, InterruptedException, URISyntaxException  {
+        String processedQuery = query.trim().replaceAll("\\s+", "");
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("https://api.spotify.com/v1/search?q=" + processedQuery + "&type=album,artist,track"))
+                .header("Authorization", "Bearer " + spotifyApi.getAccessToken())
+                .GET() //GET is the default so no need to specify, just did it here for learning purposes.
+                .build();
 
-        return null;
+        HttpClient client = HttpClient.newHttpClient();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return response.body();
+        } else {
+            System.err.println("Failed to get related artists:");
+            System.err.println("Status Code: " + response.statusCode());
+            System.err.println("Response Body: " + response.body());
+            throw new IOException("Failed to get searched item: " + response.body());
+        }
     }
 }
+
+

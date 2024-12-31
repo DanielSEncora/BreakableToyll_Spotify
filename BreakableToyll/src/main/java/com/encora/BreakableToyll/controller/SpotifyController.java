@@ -64,8 +64,8 @@ public class SpotifyController {
 
 
 
-    @GetMapping("search")
-    public ResponseEntity<Object> searchArtist(){
-        return ResponseEntity.ok(spotifyService.search());
+    @GetMapping("search/{query}")
+    public ResponseEntity<Object> searchArtist(@PathVariable String query)throws IOException, URISyntaxException, InterruptedException {
+        return ResponseEntity.ok(spotifyService.search(query));
     }
 }

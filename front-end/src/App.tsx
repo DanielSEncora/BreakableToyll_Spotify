@@ -10,6 +10,7 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import ArtistPage from "./pages/ArtistPage";
 import AlbumPage from "./pages/AlbumPage";
+import "./App.css";
 
 const App = () => {
   return (
@@ -40,7 +41,11 @@ const ConditionalNavbar = () => {
 
   return (
     <nav>
-      <Link to="/homepage">Home</Link>
+      <p>
+        <Link className="homeButton" to="/homepage">
+          Home
+        </Link>
+      </p>
     </nav>
   );
 };

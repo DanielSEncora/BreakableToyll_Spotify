@@ -81,7 +81,9 @@ const HomePage = () => {
 
   return (
     <div>
-      <SearchBar onSearch={handleSearch} />
+      <div>
+        <SearchBar onSearch={handleSearch} />
+      </div>
       <TopArtists />
       <h1>Search Results</h1>
       {searchResults && (

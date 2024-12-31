@@ -23,6 +23,7 @@ interface Album {
   tracks: {
     items: Track[];
   };
+  artists: Artist[];
 }
 
 interface Image {
@@ -31,7 +32,7 @@ interface Image {
 
 const AlbumPage: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // Extract the artist ID from the URL
-  const [artist, setArtist] = useState<Artist | null>(null);
+  //const [artist, setArtist] = useState<Artist | null>(null);
   const [album, setAlbum] = useState<Album | null>(null);
 
   useEffect(() => {

@@ -206,6 +206,9 @@ const ArtistPage: React.FC = () => {
                       track.album.images &&
                       track.album.images[0] ? (
                         <img
+                          onClick={() =>
+                            (window.location.href = `/albums/${track.album.id}`)
+                          }
                           src={track.album.images[0].url}
                           alt={track.name}
                           style={{ width: "50px", height: "50px" }}
@@ -239,6 +242,9 @@ const ArtistPage: React.FC = () => {
                 >
                   {album.images && album.images[0] ? (
                     <img
+                      onClick={() =>
+                        (window.location.href = `/albums/${album.id}`)
+                      }
                       src={album.images[0].url}
                       alt={album.name}
                       style={{

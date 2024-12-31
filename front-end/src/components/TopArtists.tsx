@@ -26,7 +26,6 @@ const TopArtists: React.FC = () => {
       {userTopArtists ? (
         userTopArtists.map((artistResult) => (
           <h2 key={artistResult.id}>
-            {/* Make the artist name clickable */}
             <Link to={`/artist/${artistResult.id}`}>{artistResult.name}</Link>
           </h2>
         ))

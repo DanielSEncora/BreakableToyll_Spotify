@@ -6,14 +6,14 @@ interface Artist {
   name: string;
   id: string;
   genres: string[];
-  image: Image[];
+  images: Image[];
 }
 
 interface Track {
-  name: string;
   id: string;
+  name: string;
+  album: Album;
   duration_ms: number;
-  track_number: number;
 }
 
 interface Album {
@@ -23,6 +23,8 @@ interface Album {
   tracks: {
     items: Track[];
   };
+  artists: Artist[];
+  release_date: string;
 }
 
 interface Image {
@@ -30,8 +32,8 @@ interface Image {
 }
 
 const AlbumPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>(); // Extract the artist ID from the URL
-  const [artist, setArtist] = useState<Artist | null>(null);
+  const { id } = useParams<{ id: string }>();
+
   const [album, setAlbum] = useState<Album | null>(null);
 
   useEffect(() => {
@@ -69,51 +71,52 @@ const AlbumPage: React.FC = () => {
     return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
   };
 
-  // Limit to the top x tracks
-  //const topTracks = tracks.slice(0, 5);
   return (
-    <div>
-      <h1 style={{ textAlign: "center", marginTop: "5px" }}>{album?.name}</h1>
-      <div>
-        <img
-          src={album?.images[0].url}
-          alt={album?.name}
-          style={{ width: "300px", height: "300px" }}
-        />
-      </div>
-      <h2 style={{ textAlign: "center", marginTop: "5px" }}>Album Songs</h2>
-      <table
-        style={{
-          width: "100%",
-          textAlign: "center",
-          marginTop: "5px",
-          border: "solid",
-          borderBottomColor: "white",
-        }}
-      >
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Song Name</th>
-            <th>Song Length</th>
-          </tr>
-        </thead>
-        <tbody>
-          {album?.tracks?.items?.length ? (
-            album.tracks.items.map((track, index) => (
-              <tr key={track.id}>
-                <td>{index + 1}</td>
-                <td>{track.name}</td>
-                <td>{formatDuration(track.duration_ms)}</td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={4}>No tracks available.</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+    <div className="p-6">
+      {album ? (
+        <>
+          <div className="bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg shadow-xl p-6 mb-8">
+            <div className="flex items-center space-x-4">
+              <Link to={`/artist/${album.artists[0].id}`} className="block">
+                <img
+                  src={album.images[0].url}
+                  alt={album.name}
+                  className="w-48 h-48 rounded-full object-cover border-4 border-white"
+                />
+              </Link>
+              <div className="text-center">
+                <h1 className="text-4xl font-bold">{album.name}</h1>
+                <Link to={`/artist/${album.artists[0].id}`} className="block">
+                  <p className="text-lg font-semibold mt-2">
+                    Artist: {album.artists[0]?.name || "Unknown Artist"}
+                  </p>
+                </Link>
+                <p className="text-lg font-semibold mt-2">
+                  Year: {album.release_date || "Unknown Artist"}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <h2 className="text-3xl font-bold text-white text-center mb-8">
+            Album Songs
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {album?.tracks?.items.map((track) => (
+              <div className="bg-gradient-to-r from-green-400 via-red-600 to-purple-800 text-white rounded-xl shadow-xl hover:scale-105 transition-transform duration-300 p-4">
+                <p className="text-lg font-semibold mb-2 truncate">
+                  {track.name}
+                </p>
+                <p className="text-sm text-gray-700">
+                  {formatDuration(track.duration_ms)}
+                </p>
+              </div>
+            ))}
+          </div>
+        </>
+      ) : (
+        <h1 className="text-white text-center">Loading album data...</h1>
+      )}
     </div>
   );
 };

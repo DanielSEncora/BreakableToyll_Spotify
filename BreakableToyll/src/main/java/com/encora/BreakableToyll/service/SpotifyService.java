@@ -19,11 +19,16 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 @Service
 public class SpotifyService {
 
-    private static String client_id = "8f488a66542545c6ae38ec67f8245952";
-    private static String client_secret = "a9bafcd9d7574409be3f65b8e7430af7";
+    private static Dotenv dotenv= Dotenv.load();
+
+    private static String client_id = client_id = dotenv.get("SPOTIFY_CLIENT_ID");
+
+    private static String client_secret = dotenv.get("SPOTIFY_CLIENT_SECRET");
     private static String code = "";
     private static final URI redirectUri = SpotifyHttpManager.makeUri("http://localhost:9090/Sparktify/get-user-code");
 

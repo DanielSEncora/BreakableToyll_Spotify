@@ -6,7 +6,7 @@ interface Artist {
   name: string;
   id: string;
   genres: string[];
-  image: Image[];
+  images: Image[];
 }
 
 interface Track {
@@ -27,11 +27,10 @@ interface Image {
 }
 
 const ArtistPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>(); // Extract the artist ID from the URL
+  const { id } = useParams<{ id: string }>();
   const [artist, setArtist] = useState<Artist | null>(null);
   const [tracks, setTracks] = useState<Track[]>([]);
   const [artistAlbums, setArtistAlbums] = useState<Album[]>([]);
-  //const [relatedArtists, setRelatedArtists] = useState<Artist[]>([]);
 
   useEffect(() => {
     const getArtist = async () => {
@@ -52,33 +51,6 @@ const ArtistPage: React.FC = () => {
         console.error("Error fetching artist data:", error);
       }
     };
-    /*const getRelatedArtists = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:9090/Sparktify/artists/${id}/related-artists`,
-          {
-            method: "GET",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const data = await response.json();
-        if (Array.isArray(data.items)) {
-          setRelatedArtists(data.items); // Set related artists directly to the items array
-        } else {
-          console.error(
-            "Related Artists data does not contain 'items' array:",
-            data
-          );
-          setRelatedArtists([]); // Fallback to an empty array
-        }
-      } catch (error) {
-        console.error("Error fetching related artists data:", error);
-        setRelatedArtists([]); // Fallback to an empty array in case of an error
-      }
-    };*/
 
     const getArtistAlbums = async () => {
       try {
@@ -94,14 +66,14 @@ const ArtistPage: React.FC = () => {
         );
         const data = await response.json();
         if (Array.isArray(data.items)) {
-          setArtistAlbums(data.items); // Set albums directly to the items array
+          setArtistAlbums(data.items);
         } else {
           console.error("Albums data does not contain 'items' array:", data);
-          setArtistAlbums([]); // Fallback to an empty array
+          setArtistAlbums([]);
         }
       } catch (error) {
         console.error("Error fetching albums data:", error);
-        setArtistAlbums([]); // Fallback to an empty array in case of an error
+        setArtistAlbums([]);
       }
     };
     const getTracks = async () => {
@@ -117,17 +89,17 @@ const ArtistPage: React.FC = () => {
           }
         );
         const data = await response.json();
-        console.log("Tracks data:", data); // Debugging
+        console.log("Tracks data:", data);
 
         if (Array.isArray(data.tracks)) {
-          setTracks(data.tracks); // Extract the 'tracks' array
+          setTracks(data.tracks);
         } else {
           console.error("Tracks data does not contain an array:", data);
-          setTracks([]); // Fallback to an empty array
+          setTracks([]);
         }
       } catch (error) {
         console.error("Error fetching tracks data:", error);
-        setTracks([]); // Fallback to an empty array in case of an error
+        setTracks([]);
       }
     };
 
@@ -135,9 +107,6 @@ const ArtistPage: React.FC = () => {
       getArtist();
       getTracks();
       getArtistAlbums();
-      {
-        /*getRelatedArtists();*/
-      }
     }
   }, [id]);
 
@@ -149,176 +118,84 @@ const ArtistPage: React.FC = () => {
     return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
   };
 
-  // Limit to the top x tracks
-  const topTracks = tracks.slice(0, 5);
-
   return (
-    <div>
+    <div className="p-6">
       {artist ? (
         <>
-          <h1
-            style={{
-              width: "100%",
-              textAlign: "center",
-              marginTop: "5px",
-            }}
-          >
-            {artist.name}
-          </h1>
-          <p>
-            Genres:{" "}
-            {artist.genres.length > 0 ? (
-              artist.genres.map((genre, index) => (
-                <span key={index}>
-                  {genre}
-                  {index < artist.genres.length - 1 ? ", " : ""}
-                </span>
-              ))
-            ) : (
-              <span>No genres available</span>
-            )}
-          </p>
-          <h1>Popular songs</h1>
-          <table
-            style={{
-              width: "100%",
-              textAlign: "center",
-              marginTop: "5px",
-              border: "solid",
-              borderBottomColor: "white",
-            }}
-          >
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Image</th>
-                <th>Song Name</th>
-                <th>Song Length</th>
-              </tr>
-            </thead>
-            <tbody>
-              {topTracks.length > 0 ? (
-                topTracks.map((track, index) => (
-                  <tr key={track.id}>
-                    <td>{index + 1}</td>
-                    <td>
-                      {track.album &&
-                      track.album.images &&
-                      track.album.images[0] ? (
-                        <img
-                          onClick={() =>
-                            (window.location.href = `/albums/${track.album.id}`)
-                          }
-                          src={track.album.images[0].url}
-                          alt={track.name}
-                          style={{ width: "50px", height: "50px" }}
-                        />
-                      ) : (
-                        <span>No Image</span> // Fallback if image is missing
-                      )}
-                    </td>
-                    <td>{track.name}</td>
-                    <td>{formatDuration(track.duration_ms)}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={5}>No tracks available.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-          <h1>Discography</h1>
-          <ul>
-            {artistAlbums.length > 0 ? (
-              artistAlbums.slice(0, 4).map((album) => (
-                <li
-                  key={album.id}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginBottom: "10px",
-                  }}
-                >
-                  {album.images && album.images[0] ? (
-                    <img
-                      onClick={() =>
-                        (window.location.href = `/albums/${album.id}`)
-                      }
-                      src={album.images[0].url}
-                      alt={album.name}
-                      style={{
-                        width: "50px",
-                        height: "50px",
-                        marginRight: "10px",
-                        borderRadius: "5px",
-                      }}
-                    />
+          <div className="bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg shadow-xl p-6 mb-8">
+            <div className="flex items-center space-x-4">
+              <img
+                src={artist.images[0]?.url}
+                alt={artist.name}
+                className="w-48 h-48 rounded-full object-cover border-4 border-white"
+              />
+              <div className="text-center">
+                <h1 className="text-4xl font-bold">{artist.name}</h1>
+                <p className="text-xl font-semibold mt-2">Genres:</p>
+                <p className="text-sm text-gray-200">
+                  {artist.genres.length > 0 ? (
+                    artist.genres.map((genre, index) => (
+                      <span key={index}>
+                        {genre}
+                        {index < artist.genres.length - 1 ? ", " : ""}
+                      </span>
+                    ))
                   ) : (
-                    <span
-                      style={{
-                        width: "50px",
-                        height: "50px",
-                        backgroundColor: "#ccc",
-                        display: "inline-block",
-                        marginRight: "10px",
-                      }}
-                    >
-                      No Image
-                    </span>
+                    <span>No genres available</span>
                   )}
-                  <span>
-                    <Link to={`/albums/${album.id}`}>{album.name}</Link>
-                  </span>
-                </li>
-              ))
-            ) : (
-              <p>No albums available.</p>
-            )}
-          </ul>
-          {/*<h1>Related Artists</h1>
-          <ul>
-            {relatedArtists.length > 0 ? (
-              relatedArtists.slice(0, 4).map((relatedArtist) => (
-                <li
-                  key={relatedArtist.id}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginBottom: "10px",
-                  }}
+                </p>
+              </div>
+            </div>
+          </div>
+          <h2 className="text-3xl font-bold text-white text-center mb-8">
+            Popular songs
+          </h2>
+          <div className="grid grid-cols-3 gap-6">
+            {tracks?.slice(0, 6).map((track) => (
+              <Link to={`/albums/${track.album.id}`} className="block">
+                <div
+                  key={track.id}
+                  className="bg-gradient-to-r from-green-400 via-red-600 to-purple-800 text-white rounded-xl shadow-xl hover:scale-105 transition-transform duration-300 overflow-hidden p-4"
                 >
-                  {relatedArtist.image && relatedArtist.image[0] ? (
+                  <div className="mb-4">
                     <img
-                      src={relatedArtist.image[0].url}
-                      alt={relatedArtist.name}
-                      style={{
-                        width: "50px",
-                        height: "50px",
-                        marginRight: "10px",
-                        borderRadius: "5px",
-                      }}
+                      src={track.album.images[0]?.url}
+                      alt={track.album.name}
+                      className="w-24 h-24 rounded-lg object-cover mx-auto"
                     />
-                  ) : (
-                    <span
-                      style={{
-                        width: "50px",
-                        height: "50px",
-                        backgroundColor: "#ccc",
-                        display: "inline-block",
-                        marginRight: "10px",
-                      }}
-                    >
-                      No Image
-                    </span>
-                  )}
-                  <span>{relatedArtist.name}</span>
-                </li>
-              ))
-            ) : (
-              <p>No related artists available.</p>
-            )}
-          </ul>*/}
+                  </div>
+                  <p className="text-lg font-semibold mb-2">{track.name}</p>
+                  <p className="text-sm text-gray-200 mb-2">
+                    {track.album.name}
+                  </p>
+                  <p className="text-sm text-gray-700">
+                    {formatDuration(track.duration_ms)}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+          <h2 className="text-3xl font-bold text-white text-center mb-8">
+            Albums
+          </h2>
+          <div className="grid grid-cols-3 gap-6">
+            {artistAlbums.slice(0, 6).map((album) => (
+              <div
+                key={album.id}
+                className="bg-gradient-to-r from-purple-400 via-purple-600 to-purple-800 text-white rounded-xl shadow-xl hover:scale-105 transition-transform duration-300 overflow-hidden text-center p-4"
+              >
+                <Link to={`/albums/${album.id}`} className="block">
+                  <img
+                    src={album.images[0]?.url}
+                    alt={album.name}
+                    className="w-32 h-32 object-cover mx-auto mb-4 rounded-lg border-4 border-white"
+                  />
+                </Link>
+                <p className="text-lg font-semibold mb-2">{album.name}</p>
+                <p className="text-sm text-gray-200">{artist.name}</p>
+              </div>
+            ))}
+          </div>
         </>
       ) : (
         <h1>Loading artist data...</h1>

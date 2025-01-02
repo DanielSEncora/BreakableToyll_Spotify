@@ -9,7 +9,15 @@ const Login: React.FC = () => {
 
   return (
     <>
-      <button onClick={getSpotifyUserLogin}> Login </button>
+      <div className="flex flex-col justify-center items-center">
+        <button
+          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 "
+          onClick={getSpotifyUserLogin}
+        >
+          {" "}
+          Login{" "}
+        </button>
+      </div>
     </>
   );
 };

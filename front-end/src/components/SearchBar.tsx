@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 interface SearchBarProps {
-  onSearch: (query: string) => void; // Function to call when input changes
+  onSearch: (query: string) => void;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {

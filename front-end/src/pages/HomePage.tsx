@@ -96,7 +96,6 @@ const HomePage = () => {
 
       {searchResults && (
         <div>
-          {/* Artists */}
           <h2 className="text-3xl font-bold text-white text-center mb-8">
             Artists
           </h2>
@@ -119,13 +118,12 @@ const HomePage = () => {
             ))}
           </div>
 
-          {/* Tracks */}
           <h2 className="text-3xl font-bold text-white text-center mb-8">
             Tracks
           </h2>
 
           <div className="grid grid-cols-3 gap-6">
-            {searchResults.tracks?.items.map((track) => (
+            {searchResults.tracks?.items.slice(0, 6).map((track) => (
               <Link to={`/albums/${track.album.id}`} className="block">
                 <div
                   key={track.id}
@@ -150,7 +148,6 @@ const HomePage = () => {
             ))}
           </div>
 
-          {/* Albums */}
           <h2 className="text-3xl font-bold text-white text-center mb-8">
             Albums
           </h2>

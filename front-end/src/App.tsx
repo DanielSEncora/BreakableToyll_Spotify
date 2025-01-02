@@ -22,7 +22,7 @@ const App = () => {
           <Route path="/homepage" element={<HomePage />} />
           <Route path="/artist/:id" element={<ArtistPage />} />
           <Route path="/albums/:id" element={<AlbumPage />} />
-          {/* Redirect default route to /homepage */}
+
           <Route path="/" element={<Navigate to="/login" />} />
         </Routes>
       </div>
@@ -34,7 +34,6 @@ const App = () => {
 const ConditionalNavbar = () => {
   const location = useLocation();
 
-  // Hide the navbar on the /login page
   if (location.pathname === "/login") {
     return null;
   }

@@ -53,7 +53,7 @@ const TopArtists: React.FC = () => {
                 </h2>
                 <p className="text-sm text-gray-500">
                   {artistResult.genres[0].length > 0
-                    ? artistResult.genres[0] // Join genres as a comma-separated string
+                    ? artistResult.genres[0]
                     : "No Genre Available"}
                 </p>
               </div>

@@ -21,6 +21,8 @@
     background-repeat: no-repeat;
     padding: 12px 20px 12px 40px;
     transition: width 0.4s ease-in-out;
+
+    color: black;
   }
   
   input[type=text]:focus {

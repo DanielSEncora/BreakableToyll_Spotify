@@ -9,6 +9,12 @@ const TopArtists: React.FC = () => {
   interface Artist {
     name: string;
     id: string;
+    images: Images[];
+    genres: string[];
+  }
+
+  interface Images {
+    url: string;
   }
 
   useEffect(() => {
@@ -21,16 +27,41 @@ const TopArtists: React.FC = () => {
   }, []);
 
   return (
-    <div>
-      <h1>My Top Artists</h1>
+    <div className="p-6">
+      <h1 className="text-4xl font-extrabold text-white text-center mb-8 shadow-lg">
+        My Top Artists
+      </h1>
       {userTopArtists ? (
-        userTopArtists.map((artistResult) => (
-          <h2 key={artistResult.id}>
-            <Link to={`/artist/${artistResult.id}`}>{artistResult.name}</Link>
-          </h2>
-        ))
+        <div className="grid grid-cols-4 gap-6">
+          {userTopArtists?.slice(0, 8).map((artistResult) => (
+            <div
+              key={artistResult.id}
+              className="bg-white rounded-lg shadow-lg overflow-hidden"
+            >
+              <Link to={`/artist/${artistResult.id}`}>
+                <img
+                  src={artistResult.images[0].url}
+                  alt={artistResult.name}
+                  className="w-full h-48 object-cover"
+                />
+              </Link>
+              <div className="p-4">
+                <h2 className="text-lg font-semibold text-gray-800">
+                  <Link to={`/artist/${artistResult.id}`}>
+                    {artistResult.name}
+                  </Link>
+                </h2>
+                <p className="text-sm text-gray-500">
+                  {artistResult.genres[0].length > 0
+                    ? artistResult.genres[0] // Join genres as a comma-separated string
+                    : "No Genre Available"}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
       ) : (
-        <h1>LOADING...</h1>
+        <div className="text-white text-center">LOADING...</div>
       )}
     </div>
   );

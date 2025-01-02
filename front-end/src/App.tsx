@@ -15,7 +15,7 @@ import "./App.css";
 const App = () => {
   return (
     <Router>
-      <div>
+      <div className="bg-slate-900 min-h-screen text-white">
         <ConditionalNavbar />
         <Routes>
           <Route path="/login" element={<LoginPage />} />
@@ -40,12 +40,13 @@ const ConditionalNavbar = () => {
   }
 
   return (
-    <nav>
-      <p>
-        <Link className="homeButton" to="/homepage">
-          Home
-        </Link>
-      </p>
+    <nav className="absolute top-4 right-4">
+      <Link
+        className="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-green-700 transition-all duration-200"
+        to="/homepage"
+      >
+        Home
+      </Link>
     </nav>
   );
 };

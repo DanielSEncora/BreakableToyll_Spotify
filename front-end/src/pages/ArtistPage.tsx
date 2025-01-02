@@ -6,7 +6,7 @@ interface Artist {
   name: string;
   id: string;
   genres: string[];
-  image: Image[];
+  images: Image[];
 }
 
 interface Track {

@@ -7,12 +7,13 @@ interface Artist {
   id: string;
   name: string;
   images: { url: string }[];
+  genres: string[];
 }
 
 interface Track {
   id: string;
   name: string;
-  album: { name: string; images: { url: string }[] };
+  album: Album;
   duration_ms: number;
 }
 
@@ -20,11 +21,15 @@ interface Album {
   id: string;
   name: string;
   images: { url: string }[];
+  tracks: {
+    items: Track[];
+  };
+  artists: Artist[];
 }
 
 interface PaginatedResult<T> {
   href: string;
-  items: T[]; // Array of the specific type (Artist, Track, or Album)
+  items: T[];
   limit: number;
   next: string | null;
   offset: number;
@@ -69,7 +74,7 @@ const HomePage = () => {
       setSearchResults(data);
     } catch (error) {
       console.error("Error fetching search results:", error);
-      setSearchResults(null); // Clear results on error
+      setSearchResults(null);
     }
   };
 
@@ -85,82 +90,96 @@ const HomePage = () => {
         <SearchBar onSearch={handleSearch} />
       </div>
       <TopArtists />
-      <h1>Search Results</h1>
+      <h1 className="text-4xl font-extrabold text-white text-center mb-8 shadow-lg">
+        Search Results
+      </h1>
+
       {searchResults && (
         <div>
           {/* Artists */}
-          <h2>Artists</h2>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-            {searchResults.artists?.items.map((artist) => (
-              <div key={artist.id} style={{ textAlign: "center" }}>
-                <Link to={`/artist/${artist.id}`}></Link>
-                <img
-                  onClick={() =>
-                    (window.location.href = `/artist/${artist.id}`)
-                  }
-                  src={artist.images[0]?.url}
-                  alt={artist.name}
-                  style={{
-                    width: "100px",
-                    height: "100px",
-                    borderRadius: "50%",
-                  }}
-                />
-                <p>
-                  <Link to={`/artist/${artist.id}`}>{artist.name}</Link>
-                </p>
+          <h2 className="text-3xl font-bold text-white text-center mb-8">
+            Artists
+          </h2>
+          <div className="grid grid-cols-3 gap-6">
+            {searchResults.artists?.items.slice(0, 6).map((artist) => (
+              <div
+                key={artist.id}
+                className="bg-gradient-to-r from-green-400 via-green-600 to-green-800 text-white rounded-xl shadow-xl hover:scale-105 transition-transform duration-300 overflow-hidden text-center p-4"
+              >
+                <Link to={`/artist/${artist.id}`} className="block">
+                  <img
+                    src={artist.images[0]?.url}
+                    alt={artist.name}
+                    className="w-32 h-32 rounded-full object-cover mx-auto mb-4 border-4 border-white"
+                  />
+                </Link>
+                <p className="text-lg font-semibold mb-2">{artist.name}</p>
+                <p className="text-sm text-gray-200">{artist.genres[0]}</p>
               </div>
             ))}
           </div>
 
           {/* Tracks */}
-          <h2>Tracks</h2>
-          <table
-            style={{
-              width: "100%",
-              textAlign: "center",
-              borderCollapse: "collapse",
-            }}
-          >
-            <thead>
-              <tr>
-                <th>Track Name</th>
-                <th>Album</th>
-                <th>Duration</th>
-              </tr>
-            </thead>
-            <tbody>
-              {searchResults.tracks?.items.map((track) => (
-                <tr key={track.id}>
-                  <td>{track.name}</td>
-                  <td>{track.album.name}</td>
-                  <td>{formatDuration(track.duration_ms)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <h2 className="text-3xl font-bold text-white text-center mb-8">
+            Tracks
+          </h2>
+
+          <div className="grid grid-cols-3 gap-6">
+            {searchResults.tracks?.items.map((track) => (
+              <Link to={`/albums/${track.album.id}`} className="block">
+                <div
+                  key={track.id}
+                  className="bg-gradient-to-r from-green-400 via-red-600 to-purple-800 text-white rounded-xl shadow-xl hover:scale-105 transition-transform duration-300 overflow-hidden p-4"
+                >
+                  <div className="mb-4">
+                    <img
+                      src={track.album.images[0]?.url}
+                      alt={track.album.name}
+                      className="w-24 h-24 rounded-lg object-cover mx-auto"
+                    />
+                  </div>
+                  <p className="text-lg font-semibold mb-2">{track.name}</p>
+                  <p className="text-sm text-gray-200 mb-2">
+                    {track.album.name}
+                  </p>
+                  <p className="text-sm text-gray-700">
+                    {formatDuration(track.duration_ms)}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
 
           {/* Albums */}
-          <h2>Albums</h2>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-            {searchResults.albums?.items.map((album) => (
-              <div key={album.id} style={{ textAlign: "center" }}>
-                <img
-                  onClick={() => (window.location.href = `/albums/${album.id}`)}
-                  src={album.images[0]?.url}
-                  alt={album.name}
-                  style={{ width: "100px", height: "100px" }}
-                />
-                <p>
-                  <Link to={`/albums/${album.id}`}>{album.name}</Link>
-                </p>
+          <h2 className="text-3xl font-bold text-white text-center mb-8">
+            Albums
+          </h2>
+          <div className="grid grid-cols-3 gap-6">
+            {searchResults.albums?.items.slice(0, 6).map((album) => (
+              <div
+                key={album.id}
+                className="bg-gradient-to-r from-purple-400 via-purple-600 to-purple-800 text-white rounded-xl shadow-xl hover:scale-105 transition-transform duration-300 overflow-hidden text-center p-4"
+              >
+                <Link to={`/albums/${album.id}`} className="block">
+                  <img
+                    src={album.images[0]?.url}
+                    alt={album.name}
+                    className="w-32 h-32 object-cover mx-auto mb-4 rounded-lg border-4 border-white"
+                  />
+                </Link>
+                <p className="text-lg font-semibold mb-2">{album.name}</p>
+                <p className="text-sm text-gray-200">{album.artists[0].name}</p>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {!searchResults && <p>No results found. Start by searching above!</p>}
+      {!searchResults && (
+        <p className="text-white text-center">
+          No results found. Start by searching above!
+        </p>
+      )}
     </div>
   );
 };
